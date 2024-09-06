@@ -1,30 +1,41 @@
 import type { Metadata } from "next";
+import { Poppins } from "next/font/google";
 import Header from "./components/header";
-import { Bodoni_Moda } from "@next/font/google";
+
+const poppins = Poppins({
+	subsets: ["latin"],
+	weight: ["400", "600", "700"],
+	variable: "--font-poppins",
+});
 
 import "./globals.css";
 
 // Define the font loader at the module scope
-const bodoniModa = Bodoni_Moda({ weight: '700', subsets: ['latin'], display: 'swap' });
+// const bodoniModa = Bodoni_Moda({
+// 	weight: "700",
+// 	subsets: ["latin"],
+// 	display: "swap",
+// 	variable:
+// });
 
 export const metadata: Metadata = {
-  title: "Binder",
-  description: "Binder - Your Comprehensive Solution",
+	title: "Binder",
+	description: "Binder - Your Comprehensive Solution",
 };
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body className={`${bodoniModa.className} bg-white min-h-screen`}>
-        <Header /> {/* Header is always visible */}
-        <main className="p-4">
-          {children} {/* Main content area */}
-        </main>
-      </body>
-    </html>
-  );
+	return (
+		<html lang='en'>
+			<body className={`${poppins.variable} min-h-screen bg-licorice`}>
+				<Header /> {/* Header is always visible */}
+				<main className='p-4 h-full'>
+					{children} {/* Main content area */}
+				</main>
+			</body>
+		</html>
+	);
 }
