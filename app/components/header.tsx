@@ -30,7 +30,7 @@ function Header() {
 	});
 
 	return (
-		<header className='p-4 flex items-center justify-between bg-transparent border-b border-gray-600'>
+		<header className='p-4 flex items-center justify-between bg-white rounded-lg shadow-md mx-10 rounded-3xl'>
 			{/* Left: Binder Logo and Name */}
 			<div className='flex items-center'>
 				<Image
@@ -42,23 +42,26 @@ function Header() {
 				/>
 			</div>
 			{/* Center: Navigation Links */}
-			<nav className='flex space-x-8'>
+			<nav className='flex flex-grow justify-evenly items-center space-x-8'>
 				{/* Courses Button */}
 				<Link href='/courses'>
-				<span className='text-gray-200 text-lg font-extrabold relative top-5 transition-all duration-200 ease-in-out hover:text-white hover:underline'>
+					<span className='text-[#543D75] text-lg font-extrabold transition-all duration-200 ease-in-out ma hover:text-black hover:underline'>
 						Courses
 					</span>
 				</Link>
 				{/* Schedule Button */}
-				<span className='text-gray-200 text-lg font-extrabold relative top-5 transition-all duration-200 ease-in-out hover:text-white hover:underline'>
-					Schedule
+				<Link href='/schedule'>
+					<span className='text-[#543D75] text-lg font-extrabold transition-all duration-200 ease-in-out hover:text-black hover:underline'>
+						Schedule
 					</span>
+				</Link>
 				{/* Chat Button */}
-				<span className='text-gray-200 text-lg font-extrabold relative top-5 transition-all duration-200 ease-in-out hover:text-white hover:underline'>
-					Chat
+				<Link href='/chat'>
+					<span className='text-[#543D75] text-lg font-extrabold transition-all duration-200 ease-in-out hover:text-black hover:underline'>
+						Chat
 					</span>
+				</Link>
 			</nav>
-
 			{/* Right: User Avatar */}
 			<div className='relative'>
 				<button onClick={() => setMenuOpen(!menuOpen)}>

@@ -18,6 +18,12 @@ body {
     justify-content: center;
     align-items: center;
 }
+.header {
+    background-color: white; /* Set the background color */
+    border-radius: 10px; /* Adjust the radius to your preference */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: adds a shadow for depth */
+}
+
 
 
 
