@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body className={`${poppins.variable} min-h-screen bg-back mt-3`}>
+			<body className={`${poppins.variable} bg-back min-h-screen mt-3`}>
 				<Header /> {/* Header is always visible */}
 				<main className='p-4 h-full'>
 					{children} {/* Main content area */}

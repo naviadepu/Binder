@@ -30,9 +30,10 @@ function Header() {
 	});
 
 	return (
-		<header className='p-4 flex items-center justify-between bg-white rounded-lg shadow-md mx-10 rounded-3xl'>
+		<header className='p-2 flex items-center justify-between bg-white rounded-3xl shadow-md mx-7'>
 			{/* Left: Binder Logo and Name */}
 			<div className='flex items-center'>
+			<Link href={'/'}>
 				<Image
 					src='/binder.png'
 					alt='Binder logo'
@@ -40,9 +41,10 @@ function Header() {
 					height={60}
 					className='cursor-pointer transition-opacity duration-200 hover:opacity-80'
 				/>
+			</Link>
 			</div>
 			{/* Center: Navigation Links */}
-			<nav className='flex flex-grow justify-evenly items-center space-x-8'>
+			<nav className='flex space-x-11'>
 				{/* Courses Button */}
 				<Link href='/courses'>
 					<span className='text-[#543D75] text-lg font-extrabold transition-all duration-200 ease-in-out ma hover:text-black hover:underline'>

@@ -12,21 +12,36 @@ export default function Home() {
 		// 	}}
 		// >
 		
-		<div className='font-poppins text-center grid place-items-center h-full items-center justify-center flex-grow p-4'>
+		<div className='font-poppins text-center grid place-items-center items-center justify-center flex-grow p-2'>
 			{/* Main Title */}
+			<section className="h-dvh flex flex-col justify-center items-center bg-gradient-to-r from-primary to-secondary text[#543D75ff]">
 			<h1 className='text-7xl md:text-8xl font-bold mb-4 drop-shadow-md'>
 				BINDER
 			</h1>
 			{/* Motto */}
 			<h2 className='text-3xl md:text-4xl font-semibold w-full text-center mx-auto mb-6 drop-shadow-md'>
-				<span className='text-celadon'>Know</span> Your Semester
+				<span className='text-[#385435ff]'>Know</span> Your Semester
 			</h2>
 			{/* Additional Text */}
 			<p className='text-lg md:text-xl drop-shadow-md mt-4 mb-8 px-4'>
-				Efficiently manage your courses, map, and schedule all in one place.
+				Efficiently manage your courses, schedule and chatbot all in one place.
 				
 			</p>
+			<div>
+			<a href="#features">
+    <button className="bg-[#543D75ff] text-white px-6 py-3 rounded-md font-semibold transition-transform transform hover:scale-105">
+        Get Started
+    </button>
+          </a>
+          <a href="#learn-more" className="ml-4">
+            <button className="bg-transparent border-2 border-[#543D75ff] px-6 py-3 rounded-md font-semibold text-white transition-transform transform hover:scale-105">
+              Learn More
+            </button>
+          </a>
+        </div>
+      </section>
 		</div>
+		
 		// </div>
 	);
 }
