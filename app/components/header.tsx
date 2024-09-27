@@ -30,7 +30,7 @@ function Header() {
 	});
 
 	return (
-		<header className='p-2 flex items-center justify-between bg-white rounded-3xl shadow-md mx-7'>
+		<header className='p-2 mt-10 flex items-center justify-between bg-white rounded-3xl shadow-md mx-7'>
 			{/* Left: Binder Logo and Name */}
 			<div className='flex items-center'>
 			<Link href={'/'}>

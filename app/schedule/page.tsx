@@ -1,10 +1,8 @@
-import { Poppins } from '@next/font/google';
+import React from 'react'
 
-const poppins = Poppins({ subsets: ['latin'], weight: ['400', '600', '700'] });
-
-export default function Courses() {
+function page() {
   return (
-    <div className={`${poppins.className} min-h-screen p-6`}>
+    <div className= "font-poppins flex-grow p-6">
       <header className="mb-8">
         <h1 className="text-4xl font-bold">Schedule</h1>
         <p className="text-lg">Schedule your classes here!.</p>
@@ -21,5 +19,7 @@ export default function Courses() {
         {/* Add more course cards as needed */}
       </main>
     </div>
-  );  
+  )
 }
+
+export default page
