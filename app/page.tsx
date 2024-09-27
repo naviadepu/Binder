@@ -28,12 +28,12 @@ export default function Home() {
         </p>
         <div>
           <a href="#features">
-            <button className="bg-[#543D75ff] text-white px-6 py-3 rounded-md font-semibold transition-transform transform hover:scale-105">
+            <button className="bg-purple text-white px-6 py-3 rounded-md font-semibold transition-transform transform hover:scale-105">
               Get Started
             </button>
           </a>
           <a href="#learn-more" className="ml-4">
-            <button className="bg-transparent border-2 border-[#543D75ff] px-6 py-3 rounded-md font-semibold text-white transition-transform transform hover:scale-105">
+            <button className="bg-transparent border-2 border-purple px-6 py-3 rounded-md font-semibold text-purple transition-transform transform hover:scale-105">
               Learn More
             </button>
           </a>

@@ -24,6 +24,7 @@ const config: Config = {
 				rosewood: "#510d0a",
 				smokyblack: "#191102",
 				back: "e4ddeaff",
+				purple: "#543D75ff",
 				background: "hsl(var(--background))",
 				foreground: "hsl(var(--foreground))",
 				card: {
