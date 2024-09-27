@@ -45,21 +45,18 @@ function Header() {
 			<nav className='flex space-x-8'>
 				{/* Courses Button */}
 				<Link href='/courses'>
-					<button className='bg-salmonpink relative px-6 py-3 text-lg font-semibold text-black rounded-lg overflow-hidden group'>
-						<span className='absolute inset-0 bg-sky-300 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-in-out'></span>
-						<span className='relative'>Courses</span>
-					</button>
+				<span className='text-gray-200 text-lg font-extrabold relative top-5 transition-all duration-200 ease-in-out hover:text-white hover:underline'>
+						Courses
+					</span>
 				</Link>
-				{/* Map Button */}
-				<button className='bg-salmonpink relative px-6 py-3 text-lg font-semibold text-black rounded-lg overflow-hidden group'>
-					<span className='absolute inset-0 bg-sky-300 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-in-out'></span>
-					<span className='relative'>Map</span>
-				</button>
 				{/* Schedule Button */}
-				<button className='bg-salmonpink relative px-6 py-3 text-lg font-semibold text-black rounded-lg overflow-hidden group'>
-					<span className='absolute inset-0 bg-sky-300 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-in-out'></span>
-					<span className='relative'>Schedule</span>
-				</button>
+				<span className='text-gray-200 text-lg font-extrabold relative top-5 transition-all duration-200 ease-in-out hover:text-white hover:underline'>
+					Schedule
+					</span>
+				{/* Chat Button */}
+				<span className='text-gray-200 text-lg font-extrabold relative top-5 transition-all duration-200 ease-in-out hover:text-white hover:underline'>
+					Chat
+					</span>
 			</nav>
 
 			{/* Right: User Avatar */}

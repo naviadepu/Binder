@@ -4,10 +4,10 @@ const poppins = Poppins({ subsets: ['latin'], weight: ['400', '600', '700'] });
 
 export default function Courses() {
   return (
-    <div className={`${poppins.className} min-h-screen p-6 bg-gray-100`}>
+    <div className={`${poppins.className} min-h-screen p-6`}>
       <header className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-800">Courses</h1>
-        <p className="text-lg text-gray-600">Explore the courses available to you.</p>
+        <h1 className="text-4xl font-bold">Courses</h1>
+        <p className="text-lg">Explore the courses available to you.</p>
       </header>
 
       <main className="flex flex-col gap-6">

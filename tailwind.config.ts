@@ -23,6 +23,7 @@ const config: Config = {
 				oldgold: "#a29f15",
 				rosewood: "#510d0a",
 				smokyblack: "#191102",
+				back: "e4ddeaff",
 				background: "hsl(var(--background))",
 				foreground: "hsl(var(--foreground))",
 				card: {

@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* globals.css */
+/* CSS HEX */
+/*--seal-brown: #512811ff;
+--white: #FEFEFFff;
+--snow: #F8F5F7ff;
+--eminence: #543D75ff;
+--lavender-web: #E4DDEAff;*/
+body {
+    background: #E4DDEAff;
+    color: #543D75ff; /* Text color to stand out against the background */
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif; /* Make sure to include this font */
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+
+
+
+
+
