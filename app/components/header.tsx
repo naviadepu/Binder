@@ -35,9 +35,9 @@ function Header() {
 			<div className='flex items-center'>
 			<Link href={'/'}>
 				<Image
-					src='/binder.png?v=1'
+					src='/Binder1.png'
 					alt='Binder logo'
-					width={60}
+					width={100}
 					height={60}
 					className='cursor-pointer transition-opacity duration-200 hover:opacity-80'
 				/>
