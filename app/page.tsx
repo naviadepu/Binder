@@ -15,7 +15,11 @@ export default function Home() {
       {/* Main Title */}
       <section className="flex flex-col justify-center items-center bg-gradient-to-r from-primary to-secondary text[#543D75ff]">
         <h1 className="text-7xl md:text-5xl font-semibold mb-4 drop-shadow-md">
-          Your Digital Companion for Seamless Learning
+        <p>
+      <span>Your digital companion for<br></br></span>
+      <span>seamless learning</span>
+       </p>
+
         </h1>
         {/* Motto */}
         {/*<h2 className='text-3xl md:text-4xl font-semibold w-full text-center mx-auto mb-6 drop-shadow-md'>
@@ -27,18 +31,20 @@ export default function Home() {
           place.
         </p>
         <div>
-          <a href="#features">
-            <button className="bg-purple text-white px-6 py-3 rounded-md font-semibold transition-transform transform hover:scale-105">
-              Get Started
-            </button>
-          </a>
-          <a href="#learn-more" className="ml-4">
-            <button className="bg-transparent border-2 border-purple px-6 py-3 rounded-md font-semibold text-purple transition-transform transform hover:scale-105">
-              Learn More
-            </button>
-          </a>
         </div>
+        <div className="flex items-center space-x-4">
+  <button className="text-white bg-[#543D75ff] px-6 py-3 rounded-md font-semibold transition-transform transform hover:scale-105">
+    Get Started
+  </button>
+  <a href="#learn-more">
+    <button className="text-purple bg-transparent border-2 border-purple px-6 py-3 rounded-md font-semibold transition-transform transform hover:scale-105">
+      Learn More
+    </button>
+  </a>
+</div>
+
       </section>
     </div>
+
   );
 }
