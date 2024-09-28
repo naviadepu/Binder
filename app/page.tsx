@@ -32,12 +32,12 @@ export default function Home() {
         </p>
         <div>
         </div>
-        <div className="flex items-center space-x-4">
+         <div className="flex items-center space-x-4">
   <button className="text-white bg-[#543D75ff] px-6 py-3 rounded-md font-semibold transition-transform transform hover:scale-105">
     Get Started
   </button>
   <a href="#learn-more">
-    <button className="text-purple bg-transparent border-2 border-purple px-6 py-3 rounded-md font-semibold transition-transform transform hover:scale-105">
+    <button className="text-purple bg-transparent border-2 border-white px-6 py-3 rounded-md font-semibold transition-transform transform hover:scale-105">
       Learn More
     </button>
   </a>

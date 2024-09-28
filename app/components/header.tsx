@@ -35,7 +35,7 @@ function Header() {
 			<div className='flex items-center'>
 			<Link href={'/'}>
 				<Image
-					src='/binder.png'
+					src='/binder.png?v=1'
 					alt='Binder logo'
 					width={60}
 					height={60}
