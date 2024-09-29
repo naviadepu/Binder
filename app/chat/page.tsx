@@ -1,12 +1,25 @@
 import React from 'react'
+import Image from 'next/image';
+import Chatbox from '/components/chatbox.tsx;
+
 
 function page() {
   return (
+    
     <div className="flex-grow font-poppins">
       <header className="mb-8">
         <h1 className="text-4xl font-bold">Chat</h1>
         <p className="text-lg">Ask Melos</p>
       </header>
+          <Image
+        src="/melos.png"  // Update this path if needed
+            alt="Melos chatbot"
+        width={200}
+      height={200}
+        className="chatbot-icon"
+        />
+
+
 
       <main className="flex flex-col gap-6">
         {/* Example Course Card */}
@@ -17,6 +30,7 @@ function page() {
         </div>
 
         {/* Add more course cards as needed */}
+        
       </main>
     </div>
   )
