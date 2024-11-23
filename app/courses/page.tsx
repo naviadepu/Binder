@@ -31,6 +31,8 @@ export default function CourseRecommendation() {
   const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
+  const [sendingToAdvisor, setSendingToAdvisor] = useState(false);
+  const [advisorMessage, setAdvisorMessage] = useState<string>('');
 
   // Helper functions
   const addPrerequisite = () => {
@@ -178,6 +180,25 @@ export default function CourseRecommendation() {
     }
   };
 
+  const handleSendToAdvisor = async () => {
+    setSendingToAdvisor(true);
+    try {
+      // Here you would typically make an API call to your backend
+      // For now, we'll just simulate it
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      setAdvisorMessage('Successfully sent to advisor for approval!');
+      
+      // Clear the message after 3 seconds
+      setTimeout(() => {
+        setAdvisorMessage('');
+      }, 3000);
+    } catch (error) {
+      setAdvisorMessage('Failed to send to advisor. Please try again.');
+    } finally {
+      setSendingToAdvisor(false);
+    }
+  };
+
   // Rest of your component JSX remains the same
   return (
     <div className="container mx-auto p-4">
@@ -298,11 +319,42 @@ export default function CourseRecommendation() {
       {/* Enrolled Courses */}
       {enrolledCourses.length > 0 && (
         <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-6 text-white">Enrolled Courses</h2>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-white">Enrolled Courses</h2>
+            <button
+              onClick={handleSendToAdvisor}
+              disabled={sendingToAdvisor || enrolledCourses.length === 0}
+              className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg 
+                       disabled:opacity-50 disabled:cursor-not-allowed transition-all
+                       flex items-center gap-2"
+            >
+              {sendingToAdvisor ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Sending...
+                </>
+              ) : (
+                'Send to Advisor'
+              )}
+            </button>
+          </div>
+          
+          {advisorMessage && (
+            <div className={`mb-4 p-4 rounded-lg ${
+              advisorMessage.includes('Successfully') 
+                ? 'bg-green-500/20 text-green-200' 
+                : 'bg-red-500/20 text-red-200'
+            }`}>
+              {advisorMessage}
+            </div>
+          )}
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {enrolledCourses.map((course) => (
               <div key={course.id} className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-6">
-                <h3 className="text-xl font-semibold mb-2 text-white">{course.courseCode}: {course.title}</h3>
+                <h3 className="text-xl font-semibold mb-2 text-white">
+                  {course.courseCode}: {course.title}
+                </h3>
                 <p className="text-white/70 mb-4">{course.description}</p>
                 <p className="text-sm text-white/50">Credits: {course.credits}</p>
               </div>
