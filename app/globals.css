@@ -1,50 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* globals.css */
-/* CSS HEX */
-/*--seal-brown: #512811ff;
---white: #FEFEFFff;
---snow: #F8F5F7ff;
---eminence: #543D75ff;
---lavender-web: #E4DDEAff;*/
+
 body {
-    background: #E4DDEAff;
-    color: #543D75ff; /* Text color to stand out against the background */
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif; /* Make sure to include this font */
-    min-height: 100vh;
-    justify-content: center;
-    align-items: center;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-attachment: fixed;
 }
-.header {
-    background-color: white; /* Set the background color */
-    border-radius: 10px; /* Adjust the radius to your preference */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: adds a shadow for depth */
+
+* {
+  box-sizing: border-box;
 }
-.chatbot-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .chatbot-icon {
-    animation: bounce 2s infinite;
-  }
-  
-  @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
-      transform: translateY(0);
-    }
-    40% {
-      transform: translateY(-20px);
-    }
-    60% {
-      transform: translateY(-10px);
-    }
-  }
-  
 
 
 

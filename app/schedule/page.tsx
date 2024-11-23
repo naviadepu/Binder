@@ -1,6 +1,6 @@
 import React from 'react'
 
-function page() {
+function Page() {
   return (
     <div className= "font-poppins flex-grow p-6">
       <header className="mb-8">
@@ -22,4 +22,4 @@ function page() {
   )
 }
 
-export default page
+export default Page

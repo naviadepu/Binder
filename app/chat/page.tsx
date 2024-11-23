@@ -1,9 +1,9 @@
 import React from 'react'
 import Image from 'next/image';
-import Chatbox from '/components/chatbox.tsx;
+import chatbox from '../components/chatbox'
 
 
-function page() {
+function Page() {
   return (
     
     <div className="flex-grow font-poppins">
@@ -36,4 +36,4 @@ function page() {
   )
 }
 
-export default page
+export default Page
