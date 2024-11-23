@@ -29,7 +29,7 @@ export default function RootLayout({
           <div className="max-w-7xl mx-auto px-6 py-5 flex items-center">
             <div className="flex-none">
               <Link href="/" className="text-white font-semibold text-3xl tracking-tighter hover:text-white hover:opacity-90 transition-all">
-                Binder
+                BINDER
               </Link>
             </div>
             <div className="flex-1 flex justify-center items-center gap-12">
