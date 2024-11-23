@@ -54,9 +54,6 @@ export default function RootLayout({
               <button className="bg-white hover:bg-white/90 text-black px-5 py-2 rounded-lg text-base font-medium transition-colors">
                 Sign In
               </button>
-              <button className="bg-white/10 hover:bg-white/20 text-white px-5 py-2 rounded-lg text-base font-medium border border-white/10 transition-colors">
-                Download
-              </button>
             </div>
           </div>
         </nav>

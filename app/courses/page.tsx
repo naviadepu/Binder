@@ -1,6 +1,7 @@
 "use client";
-import React, { ReactNode, useState } from "react";
+import React, { useState } from 'react';
 
+// Define interfaces clearly
 interface Course {
   id: string;
   courseCode: string;
@@ -13,135 +14,178 @@ interface Course {
 interface UserPreferences {
   major: string;
   year: "Freshman" | "Sophomore" | "Junior" | "Senior";
-  pathway?: string;
+  pathway: string;
   prerequisites: string[];
 }
 
-export default function CoursesPage() {
+export default function CourseRecommendation() {
+  // Initialize state with proper types
   const [userPreferences, setUserPreferences] = useState<UserPreferences>({
-    major: "",
+    major: '',
     year: "Freshman",
-    pathway: "",
+    pathway: '',
     prerequisites: [],
   });
   const [prerequisiteInput, setPrerequisiteInput] = useState("");
   const [courses, setCourses] = useState<Course[]>([]);
   const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
 
+  // Helper functions
   const addPrerequisite = () => {
     if (prerequisiteInput.trim()) {
-      setUserPreferences((prev) => ({
+      setUserPreferences(prev => ({
         ...prev,
-        prerequisites: [...prev.prerequisites, prerequisiteInput.trim()],
+        prerequisites: [...prev.prerequisites, prerequisiteInput.trim()]
       }));
       setPrerequisiteInput("");
     }
   };
 
   const removePrerequisite = (index: number) => {
-    setUserPreferences((prev) => ({
+    setUserPreferences(prev => ({
       ...prev,
-      prerequisites: prev.prerequisites.filter((_, i) => i !== index),
+      prerequisites: prev.prerequisites.filter((_, i) => i !== index)
     }));
   };
 
+  // Main fetch function with debug logs
   const fetchCourses = async () => {
+    console.log('Starting fetchCourses...'); // Debug log
+    console.log('Current userPreferences:', userPreferences); // Debug log
+
     if (!userPreferences.major || !userPreferences.year) {
       setError("Please fill in at least your major and year");
       return;
     }
 
     setLoading(true);
-    setError("");
+    setError('');
     setCourses([]);
 
     try {
       const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-      console.log('API Key exists:', !!apiKey);
+      console.log('API Key exists:', !!apiKey); // Debug log (don't log the actual key)
+
       if (!apiKey) {
-        throw new Error("API key not found. Please configure it in your .env.local file.");
+        throw new Error("API key not found");
       }
 
-      const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+      console.log('Attempting API call to:', apiUrl); // Debug log
 
-      const response = await fetch(GEMINI_API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const requestBody = {
+        contents: [{
+          parts: [{
+            text: `You are a course recommendation system. Based on the following student information, recommend suitable courses:
+            Major: ${userPreferences.major}
+            Year: ${userPreferences.year}
+            ${userPreferences.pathway ? `Desired Pathway: ${userPreferences.pathway}` : ''}
+            Prerequisites Completed: ${userPreferences.prerequisites.join(', ') || 'None'}
+            
+            Format each course recommendation as:
+            COURSECODE: Course Title
+            Description of the course`
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 32,
+          topP: 1,
+          maxOutputTokens: 1024,
         },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: `Generate 3 course recommendations for a student with the following profile:
-                Major: ${userPreferences.major}
-                Year: ${userPreferences.year}
-                ${userPreferences.pathway ? `Desired Pathway: ${userPreferences.pathway}` : ""}
-                Prerequisites Completed: ${userPreferences.prerequisites.join(", ") || "None"}
+        safetySettings: [
+          {
+            category: "HARM_CATEGORY_HARASSMENT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          {
+            category: "HARM_CATEGORY_HATE_SPEECH",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          {
+            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          {
+            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          }
+        ]
+      };
 
-                Please format recommendations as plain text with course titles and descriptions.`,
-                },
-              ],
-            },
-          ],
-        }),
+      console.log('Making request with body:', requestBody);
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch recommendations: ${response.statusText}`);
+        const errorData = await response.text();
+        console.error('API Error Response:', errorData);
+        throw new Error(`API error: ${response.status}`);
       }
 
       const data = await response.json();
-      const responseText = data.candidates[0].content.parts[0].text;
-      console.log('API Response:', responseText);
+      console.log('API Response:', data);
 
-      const courseRecommendations = responseText.split('\n\n').filter(Boolean);
-      
-      const parsedCourses = courseRecommendations
-        .map((recommendation: string) => {
+      if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
+        throw new Error('Invalid response format from API');
+      }
+
+      const responseText = data.candidates[0].content.parts[0].text;
+      console.log('Response text:', responseText); // Debug log
+
+      // Parse courses from response
+      const parsedCourses = responseText
+        .split('\n\n')
+        .filter(Boolean)
+        .map((recommendation: string): Course => {
           const lines = recommendation.split('\n');
           return {
             id: Math.random().toString(36).substr(2, 9),
             courseCode: lines[0]?.match(/^([A-Z]+\d+)/)?.[0] || "Unknown",
             title: lines[0]?.replace(/^[0-9]+\.\s*/, '').replace(/\*/g, '').replace(/Recommendation \d+:/, '').trim(),
             description: lines.slice(1).join('\n').replace(/\*/g, '').trim(),
-            credits: 3,
-            prerequisites: []
+            credits: 3
           };
         })
-        .filter((course: Course) => 
+        .filter((course: { title: string; description: any; }) => 
           course.title && 
           course.description && 
-          course.title !== 'Unknown Course' && 
-          course.description !== 'No description available'
+          course.title !== 'Unknown Course'
         );
 
+      console.log('Parsed courses:', parsedCourses); // Debug log
       setCourses(parsedCourses);
-    } catch (err: unknown) {
-      console.error("Error fetching courses:", err);
-      setError(err instanceof Error ? err.message : "An unknown error occurred");
+
+    } catch (err) {
+      console.error('Error in fetchCourses:', err); // Debug log
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
     } finally {
       setLoading(false);
     }
   };
 
   const handleEnroll = (course: Course) => {
-    setEnrolledCourses(prev => [...prev, course]);
+    if (!enrolledCourses.some(c => c.id === course.id)) {
+      setEnrolledCourses(prev => [...prev, { ...course, enrolled: true }]);
+    }
   };
 
-  const sendToAdvisor = () => {
-    alert('Course approval request sent to advisor!');
-  };
-
+  // Rest of your component JSX remains the same
   return (
-    <div className="min-h-screen w-full p-8">
+    <div className="container mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-6 text-white">Course Recommendations</h1>
+      
       {/* User Input Form */}
-      <div className="max-w-2xl mx-auto mb-8 bg-black/10 backdrop-blur-xl rounded-xl border border-white/10 p-6">
-        <h2 className="text-2xl font-bold text-white mb-4">Enter Your Details</h2>
-        <div className="space-y-4">
+      <div className="mb-8 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-white mb-2">Major (required)</label>
             <input
@@ -187,10 +231,11 @@ export default function CoursesPage() {
                 onChange={(e) => setPrerequisiteInput(e.target.value)}
                 className="flex-1 bg-black/20 text-white rounded-lg px-4 py-2 border border-white/10"
                 placeholder="Enter prerequisite"
+                onKeyPress={(e) => e.key === 'Enter' && addPrerequisite()}
               />
               <button
                 onClick={addPrerequisite}
-                className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg"
+                className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg transition-colors"
               >
                 Add
               </button>
@@ -213,37 +258,37 @@ export default function CoursesPage() {
               ))}
             </div>
           </div>
-
-          <button
-            onClick={fetchCourses}
-            className="w-full bg-white text-black px-6 py-3 rounded-lg font-medium hover:bg-white/90 transition-all"
-            disabled={loading || !userPreferences.major || !userPreferences.year}
-          >
-            {loading ? "Loading..." : "Get Course Recommendations"}
-          </button>
-          
-          {error && <p className="text-red-400 mt-2">{error}</p>}
         </div>
+
+        <button
+          onClick={fetchCourses}
+          disabled={loading || !userPreferences.major || !userPreferences.year}
+          className="mt-6 w-full bg-white hover:bg-white/90 text-black px-6 py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+        >
+          {loading ? 'Loading...' : 'Get Course Recommendations'}
+        </button>
       </div>
 
+      {error && (
+        <div className="text-red-500 mb-4">
+          Error: {error}
+        </div>
+      )}
+
       {/* Course Recommendations */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {courses.map((course) => (
-          <div
-            key={course.id}
-            className="bg-black/10 backdrop-blur-xl p-6 rounded-xl border border-white/10"
-          >
-            <div className="text-white/50 text-sm mb-2">{course.courseCode}</div>
-            <h3 className="text-lg font-bold text-white">{course.title}</h3>
-            <p className="text-white/70 mt-2">{course.description}</p>
-            <div className="mt-4 flex justify-between items-center">
-              <div className="text-white/50">{course.credits} credits</div>
+          <div key={course.id} className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-6">
+            <h2 className="text-xl font-semibold mb-2 text-white">{course.courseCode}: {course.title}</h2>
+            <p className="text-white/70 mb-4">{course.description}</p>
+            <div className="flex justify-between items-center">
+              <p className="text-sm text-white/50">Credits: {course.credits}</p>
               <button
                 onClick={() => handleEnroll(course)}
                 disabled={enrolledCourses.some(c => c.id === course.id)}
-                className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg disabled:opacity-50"
+                className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
-                {enrolledCourses.some(c => c.id === course.id) ? "Enrolled" : "Enroll"}
+                {enrolledCourses.some(c => c.id === course.id) ? 'Enrolled' : 'Enroll'}
               </button>
             </div>
           </div>
@@ -252,16 +297,14 @@ export default function CoursesPage() {
 
       {/* Enrolled Courses */}
       {enrolledCourses.length > 0 && (
-        <div className="mt-12 bg-black/10 backdrop-blur-xl rounded-xl border border-white/10 p-6">
-          <h2 className="text-2xl font-bold text-white mb-4">Enrolled Courses</h2>
-          <div className="space-y-4">
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold mb-6 text-white">Enrolled Courses</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {enrolledCourses.map((course) => (
-              <div
-                key={course.id}
-                className="bg-black/20 p-4 rounded-lg border border-white/10"
-              >
-                <h3 className="text-white font-bold">{course.title}</h3>
-                <p className="text-white/70 text-sm mt-1">{course.description}</p>
+              <div key={course.id} className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-6">
+                <h3 className="text-xl font-semibold mb-2 text-white">{course.courseCode}: {course.title}</h3>
+                <p className="text-white/70 mb-4">{course.description}</p>
+                <p className="text-sm text-white/50">Credits: {course.credits}</p>
               </div>
             ))}
           </div>
