@@ -149,18 +149,28 @@ export default function CourseRecommendation() {
         .filter(Boolean)
         .map((recommendation: string): Course => {
           const lines = recommendation.split('\n');
+          const firstLine = lines[0]?.replace(/^\d+\.\s*/, '').replace(/Recommendation \d+:\s*/, '').replace(/\*/g, '').trim();
+          const [courseCode, ...titleParts] = firstLine.split(':');
+          const description = lines.slice(1).join(' ').replace(/\*/g, '').trim();
+          // Truncate description to ~100 characters
+          const truncatedDescription = description.length > 100 
+            ? description.substring(0, 100).trim() + '...'
+            : description;
+          
           return {
             id: Math.random().toString(36).substr(2, 9),
-            courseCode: lines[0]?.match(/^([A-Z]+\d+)/)?.[0] || "Unknown",
-            title: lines[0]?.replace(/^[0-9]+\.\s*/, '').replace(/\*/g, '').replace(/Recommendation \d+:/, '').trim(),
-            description: lines.slice(1).join('\n').replace(/\*/g, '').trim(),
+            courseCode: courseCode?.trim() || "Unknown",
+            title: titleParts.join(':').trim(),
+            description: truncatedDescription,
             credits: 3
           };
         })
-        .filter((course: { title: string; description: any; }) => 
+        .filter((course: {
+          courseCode: string; title: string; description: any; 
+}) => 
           course.title && 
           course.description && 
-          course.title !== 'Unknown Course'
+          course.courseCode !== 'Unknown'
         );
 
       console.log('Parsed courses:', parsedCourses); // Debug log

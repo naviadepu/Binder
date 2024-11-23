@@ -1,50 +1,52 @@
+'use client';
+import Link from 'next/link'
+import { useState } from 'react'
+import { ArrowRightIcon } from '@heroicons/react/24/outline'
 
 export default function Home() {
+
+  const [showLearnMore, setShowLearnMore] = useState(false);
+
   return (
-    // <div
-    // 	className={`${poppins.className} flex flex-col items-center justify-center min-h-screen bg-cover bg-center`}
-    // 	style={{
-    // 		backgroundImage: `url(${backgroundImage.src})`,
-    // 		backgroundSize: "cover",
-    // 		backgroundPosition: "center",
-    // 		backgroundRepeat: "no-repeat",
-    // 	}}
-    // >
-
-    <div className="h-full font-poppins text-center grid place-items-center items-center justify-center flex-grow p-2">
-      {/* Main Title */}
-      <section className="flex flex-col justify-center items-center bg-gradient-to-r from-primary to-secondary text[#543D75ff]">
-        <h1 className="text-7xl md:text-5xl font-semibold mb-4 drop-shadow-md">
-        <p>
-      <span>Your digital companion for<br></br></span>
-      <span>seamless learning</span>
-       </p>
-
+    <div className="relative">
+      <div className="text-center text-white">
+        <h1 className="text-6xl font-bold mb-4">
+          Your digital companion for<br />seamless learning
         </h1>
-        {/* Motto */}
-        {/*<h2 className='text-3xl md:text-4xl font-semibold w-full text-center mx-auto mb-6 drop-shadow-md'>
-            <span className='text-[#385435ff]'>Know</span> Your Semester
-        </h2>*/}
-        {/* Additional Text */}
-        <p className="text-lg md:text-xl drop-shadow-md mt-4 mb-8 px-4">
-          Efficiently manage your courses, schedule and chatbot all in one
-          place.
+        <p className="text-xl mb-8">
+          Efficiently manage your courses, schedule and chatbot all in one place.
         </p>
-        <div>
+        <div className="space-x-4">
+          <Link href="/courses">
+            <button className="bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-transform hover:scale-105 inline-flex items-center">
+              Get Started
+              <ArrowRightIcon className="w-5 h-5 ml-2" />
+            </button>
+          </Link>
+          <button 
+            onClick={() => setShowLearnMore(!showLearnMore)}
+            className="text-white bg-transparent border-2 border-white px-6 py-3 rounded-lg font-medium transition-transform hover:scale-105"
+          >
+            Learn More
+          </button>
         </div>
-         <div className="flex items-center space-x-4">
-  <button className="text-white bg-[#543D75ff] px-6 py-3 rounded-md font-semibold transition-transform transform hover:scale-105">
-    Get Started
-  </button>
-  <a href="#learn-more">
-    <button className="text-purple bg-transparent border-2 border-white px-6 py-3 rounded-md font-semibold transition-transform transform hover:scale-105">
-      Learn More
-    </button>
-  </a>
-</div>
+      </div>
 
-      </section>
+      {/* Learn More Modal/Content */}
+      {showLearnMore && (
+        <div className="mt-8 max-w-2xl mx-auto">
+          <blockquote className="text-white/90 text-xl leading-relaxed font-light border-l-4 border-white/20 pl-6 py-2">
+            <p className="mb-4">
+              Binder is your all-in-one academic companion that seamlessly integrates course management, 
+              scheduling, and AI-powered assistance. With an intuitive interface and smart features, 
+              it helps you stay organized and excel in your academic journey.
+            </p>
+            <footer className="text-white/70 text-base mt-2">
+              — Your Academic Success Partner
+            </footer>
+          </blockquote>
+        </div>
+      )}
     </div>
-
   );
 }
