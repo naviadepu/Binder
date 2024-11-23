@@ -46,7 +46,7 @@ export default function RootLayout({
                 Schedule
               </Link>
               <Link 
-                href="/chatbot" 
+                href="/chat" 
                 className="px-4 py-2 rounded-lg text-white/75 hover:text-black hover:bg-white text-lg font-medium transition-all"
               >
                 Chatbot
