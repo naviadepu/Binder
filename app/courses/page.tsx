@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from 'react';
+import { Check } from 'lucide-react';
 
 // Define interfaces clearly
 interface Course {
@@ -33,6 +34,7 @@ export default function CourseRecommendation() {
   const [error, setError] = useState<string>('');
   const [sendingToAdvisor, setSendingToAdvisor] = useState(false);
   const [advisorMessage, setAdvisorMessage] = useState<string>('');
+  const [hoveredCourse, setHoveredCourse] = useState<string | null>(null);
 
   // Helper functions
   const addPrerequisite = () => {
@@ -308,45 +310,87 @@ export default function CourseRecommendation() {
 
       {/* Course Recommendations */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {courses.map((course) => (
-          <div key={course.id} className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-6">
-            <h2 className="text-xl font-semibold mb-2 text-white">{course.courseCode}: {course.title}</h2>
-            <p className="text-white/70 mb-4">{course.description}</p>
-            <div className="flex justify-between items-center">
-              <p className="text-sm text-white/50">Credits: {course.credits}</p>
-              <button
-                onClick={() => handleEnroll(course)}
-                disabled={enrolledCourses.some(c => c.id === course.id)}
-                className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+        <div className="col-span-full bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-6">
+          <h2 className="text-xl font-semibold mb-6 text-white">Available Courses</h2>
+          
+          <div className="space-y-3">
+            {courses.map((course) => (
+              <div
+                key={course.id}
+                className="relative group"
+                onMouseEnter={() => setHoveredCourse(course.id)}
+                onMouseLeave={() => setHoveredCourse(null)}
               >
-                {enrolledCourses.some(c => c.id === course.id) ? 'Enrolled' : 'Enroll'}
-              </button>
-            </div>
+                <div className="flex items-center gap-3 bg-black/20 p-4 rounded-xl hover:bg-black/30 transition-colors">
+                  {/* Checkbox */}
+                  <div
+                    onClick={() => handleEnroll(course)}
+                    className={`w-5 h-5 rounded border cursor-pointer flex items-center justify-center transition-colors
+                      ${enrolledCourses.some(c => c.id === course.id)
+                        ? 'bg-green-500 border-green-500' 
+                        : 'border-gray-500 hover:border-green-500'}`}
+                  >
+                    {enrolledCourses.some(c => c.id === course.id) && (
+                      <Check className="w-3 h-3 text-white" />
+                    )}
+                  </div>
+                  
+                  {/* Course Info */}
+                  <div className="flex-grow">
+                    <h3 className="text-white font-medium">{course.courseCode}: {course.title}</h3>
+                    <p className="text-white/50 text-sm">Credits: {course.credits}</p>
+                  </div>
+                </div>
+
+                {/* Hover Description */}
+                {hoveredCourse === course.id && (
+                  <div className="absolute left-0 right-0 mt-2 bg-gray-800/95 p-4 rounded-lg shadow-xl z-10 backdrop-blur-sm border border-white/10">
+                    <p className="text-white/80 text-sm">{course.description}</p>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
-        ))}
+
+          {/* Course Summary (without button) */}
+          {enrolledCourses.length > 0 && (
+            <div className="mt-6 pt-6 border-t border-white/10">
+              <p className="text-white/70">
+                Selected: {enrolledCourses.length} courses 
+                ({enrolledCourses.reduce((acc, curr) => acc + curr.credits, 0)} credits)
+              </p>
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Send to Advisor Button - Now between sections */}
+      {enrolledCourses.length > 0 && (
+        <div className="mt-8 mb-8 flex justify-end">
+          <button
+            onClick={handleSendToAdvisor}
+            disabled={sendingToAdvisor}
+            className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg 
+                     disabled:opacity-50 disabled:cursor-not-allowed transition-all
+                     flex items-center gap-2"
+          >
+            {sendingToAdvisor ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Sending...
+              </>
+            ) : (
+              'Send to Advisor'
+            )}
+          </button>
+        </div>
+      )}
 
       {/* Enrolled Courses */}
       {enrolledCourses.length > 0 && (
-        <div className="mt-12">
-          <div className="flex justify-between items-center mb-6">
+        <div className="mt-4">
+          <div className="mb-6">
             <h2 className="text-2xl font-bold text-white">Enrolled Courses</h2>
-            <button
-              onClick={handleSendToAdvisor}
-              disabled={sendingToAdvisor || enrolledCourses.length === 0}
-              className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg 
-                       disabled:opacity-50 disabled:cursor-not-allowed transition-all
-                       flex items-center gap-2"
-            >
-              {sendingToAdvisor ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Sending...
-                </>
-              ) : (
-                'Send to Advisor'
-              )}
-            </button>
           </div>
           
           {advisorMessage && (
