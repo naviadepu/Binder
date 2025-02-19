@@ -1,7 +1,7 @@
 import React from 'react'
 
 export default function Schedule() {
-  const timeSlots = [
+    const timeSlots = [
     "8am", "9am", "10am", "11am", "12pm", 
     "1pm", "2pm", "3pm", "4pm", "5pm"
   ];
@@ -34,7 +34,7 @@ export default function Schedule() {
               {timeSlots.map((time) => (
                 <div key={`${day}-${time}`} className="h-20 border-t border-white/5">
                   {/* Course blocks will go here */}
-                </div>
+                                  </div>
               ))}
             </div>
           ))}
