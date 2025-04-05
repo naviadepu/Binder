@@ -13,6 +13,9 @@ export async function GET(req) {
 
     // Fetch all courses from the database
     const courses = await db.all('SELECT * FROM courses'); // Adjust the query as needed
+    if (!courses) {
+      throw new Error('No courses found'); // Handle case where no courses are returned
+    }
 
     // Close the database connection
     await db.close();

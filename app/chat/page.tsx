@@ -24,7 +24,7 @@ export default function Page() {
         throw new Error("API key not found");
       }
 
-      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`;
       console.log('Making request to Gemini API...'); // Debug log
 
       const requestBody = {
