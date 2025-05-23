@@ -23,29 +23,38 @@ export async function POST(req: Request) {
     });
 
     const input = {
-      modelId: "amazon.titan-text-lite-v1",
+      modelId: "deepseek.r1-v1:0", // ✅ DeepSeek R1
       contentType: "application/json",
       accept: "application/json",
       body: JSON.stringify({
-        inputText: query,
+        messages: [
+          {
+            role: "user",
+            content: query,
+          },
+        ],
+        max_tokens: 512,
+        temperature: 0.7,
+        top_p: 0.95,
       }),
     };
 
     const command = new InvokeModelCommand(input);
     const response = await client.send(command);
     const rawBody = await response.body.transformToString();
-    const parsed = JSON.parse(rawBody); // Titan returns raw JSON string
+    console.log("🧪 DeepSeek raw response:\n", rawBody);
 
-    return new Response(
-      JSON.stringify({ reply: parsed.results?.[0]?.outputText || parsed }),
-      { status: 200 }
-    );
+    const parsed = JSON.parse(rawBody);
+    const reply = parsed.choices?.[0]?.message?.content || "No response";
 
+    return new Response(JSON.stringify({ reply }), {
+      status: 200,
+    });
   } catch (error: any) {
-    console.error("❌ Titan call failed:", error);
+    console.error("❌ DeepSeek call failed:", error);
     return new Response(
       JSON.stringify({
-        error: "Titan call failed",
+        error: "DeepSeek call failed",
         detail: error?.message || String(error),
       }),
       { status: 500 }
