@@ -7,11 +7,11 @@ export interface DeepSeekConfig {
   region?: string;
   accessKeyId?: string;
   secretAccessKey?: string;
-  modelId?: string;
+  modelId?: string; // Must be an ARN
 }
 
 /**
- * Util class to call bedrock
+ * Util class to call Bedrock with DeepSeek
  */
 export class DeepSeek {
   private client: BedrockRuntimeClient;
@@ -22,7 +22,7 @@ export class DeepSeek {
       region = process.env.AWS_REGION || "us-east-1",
       accessKeyId = process.env.AWS_ACCESS_KEY_ID,
       secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY,
-      modelId = "deepseek.r1-v1:0",
+      modelId = "arn:aws:bedrock:us-east-1:YOUR-AWS-ID:inference-configuration/YOUR-CONFIG-NAME", // <-- Replace with your real ARN
     } = config;
 
     if (!accessKeyId || !secretAccessKey) {
@@ -33,26 +33,29 @@ export class DeepSeek {
       region,
       credentials: { accessKeyId, secretAccessKey },
     });
+
     this.modelId = modelId;
   }
 
   /**
-   * handles queries to bedrock models
+   * Handles queries to DeepSeek via Bedrock
    */
-  async query(query: string) {
+  async query(query: string): Promise<string> {
     if (!query) {
       throw new Error("Query is required");
     }
 
     const command = new InvokeModelCommand({
-      modelId: this.modelId,
+      modelId: this.modelId, // This must be an ARN
       contentType: "application/json",
       accept: "application/json",
       body: JSON.stringify({
+        inferenceConfig: {
+          max_tokens: 512,
+          temperature: 0.7,
+          top_p: 0.95,
+        },
         messages: [{ role: "user", content: query }],
-        max_tokens: 512,
-        temperature: 0.7,
-        top_p: 0.95,
       }),
     });
 
