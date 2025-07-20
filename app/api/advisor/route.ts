@@ -1,9 +1,6 @@
-import {
-  BedrockRuntimeClient,
-  InvokeModelCommand,
-} from "@aws-sdk/client-bedrock-runtime";
+import { NextRequest } from "next/server";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const { query } = await req.json();
 
@@ -14,47 +11,79 @@ export async function POST(req: Request) {
       );
     }
 
-    const client = new BedrockRuntimeClient({
-      region: process.env.AWS_REGION || "us-east-1",
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-      },
-    });
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return new Response(
+        JSON.stringify({ error: "Gemini API key not found" }),
+        { status: 500 }
+      );
+    }
 
-    const input = {
-      modelId: "deepseek.r1-v1:0", // ✅ DeepSeek R1
-      contentType: "application/json",
-      accept: "application/json",
-      body: JSON.stringify({
-        messages: [
-          {
-            role: "user",
-            content: query,
-          },
-        ],
-        max_tokens: 512,
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`;
+    const requestBody = {
+      contents: [
+        {
+          parts: [
+            {
+              text: query,
+            },
+          ],
+        },
+      ],
+      generationConfig: {
         temperature: 0.7,
-        top_p: 0.95,
-      }),
+        topK: 32,
+        topP: 1,
+        maxOutputTokens: 1024,
+      },
+      safetySettings: [
+        {
+          category: "HARM_CATEGORY_HARASSMENT",
+          threshold: "BLOCK_MEDIUM_AND_ABOVE",
+        },
+        {
+          category: "HARM_CATEGORY_HATE_SPEECH",
+          threshold: "BLOCK_MEDIUM_AND_ABOVE",
+        },
+        {
+          category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+          threshold: "BLOCK_MEDIUM_AND_ABOVE",
+        },
+        {
+          category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+          threshold: "BLOCK_MEDIUM_AND_ABOVE",
+        },
+      ],
     };
 
-    const command = new InvokeModelCommand(input);
-    const response = await client.send(command);
-    const rawBody = await response.body.transformToString();
-    console.log("🧪 DeepSeek raw response:\n", rawBody);
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
 
-    const parsed = JSON.parse(rawBody);
-    const reply = parsed.choices?.[0]?.message?.content || "No response";
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Gemini API error:", errorText);
+      return new Response(
+        JSON.stringify({ error: `Gemini API error: ${response.status} - ${errorText}` }),
+        { status: 500 }
+      );
+    }
+
+    const data = await response.json();
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
 
     return new Response(JSON.stringify({ reply }), {
       status: 200,
     });
   } catch (error: any) {
-    console.error("❌ DeepSeek call failed:", error);
+    console.error("Gemini call failed:", error);
     return new Response(
       JSON.stringify({
-        error: "DeepSeek call failed",
+        error: "Gemini call failed",
         detail: error?.message || String(error),
       }),
       { status: 500 }
