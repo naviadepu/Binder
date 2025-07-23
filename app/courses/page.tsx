@@ -56,9 +56,6 @@ export default function CourseRecommendation() {
 
   // Main fetch function with debug logs
   const fetchCourses = async () => {
-    console.log('Starting fetchCourses...'); // Debug log
-    console.log('Current userPreferences:', userPreferences); // Debug log
-
     if (!userPreferences.major || !userPreferences.year) {
       setError("Please fill in at least your major and year");
       return;
@@ -69,81 +66,21 @@ export default function CourseRecommendation() {
     setCourses([]);
 
     try {
-      const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-      console.log('API Key exists:', !!apiKey); // Debug log (don't log the actual key)
+      const prompt = `You are a course recommendation system. Based on the following student information, recommend suitable courses:\nMajor: ${userPreferences.major}\nYear: ${userPreferences.year}\n${userPreferences.pathway ? `Desired Pathway: ${userPreferences.pathway}` : ''}\nPrerequisites Completed: ${userPreferences.prerequisites.join(', ') || 'None'}\n\nFormat each course recommendation as:\nCOURSECODE: Course Title\nDescription of the course`;
 
-      if (!apiKey) {
-        throw new Error("API key not found");
-      }
-
-      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`;
-      console.log('Attempting API call to:', apiUrl); // Debug log
-
-      const requestBody = {
-        contents: [{
-          parts: [{
-            text: `You are a course recommendation system. Based on the following student information, recommend suitable courses:
-            Major: ${userPreferences.major}
-            Year: ${userPreferences.year}
-            ${userPreferences.pathway ? `Desired Pathway: ${userPreferences.pathway}` : ''}
-            Prerequisites Completed: ${userPreferences.prerequisites.join(', ') || 'None'}
-            
-            Format each course recommendation as:
-            COURSECODE: Course Title
-            Description of the course`
-          }]
-        }],
-        generationConfig: {
-          temperature: 0.7,
-          topK: 32,
-          topP: 1,
-          maxOutputTokens: 1024,
-        },
-        safetySettings: [
-          {
-            category: "HARM_CATEGORY_HARASSMENT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          },
-          {
-            category: "HARM_CATEGORY_HATE_SPEECH",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          },
-          {
-            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          },
-          {
-            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          }
-        ]
-      };
-
-      console.log('Making request with body:', requestBody);
-
-      const response = await fetch(apiUrl, {
+      const response = await fetch('/api/langchain-chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: prompt }),
       });
 
       if (!response.ok) {
         const errorData = await response.text();
-        console.error('API Error Response:', errorData);
         throw new Error(`API error: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log('API Response:', data);
-
-      if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
-        throw new Error('Invalid response format from API');
-      }
-
-      const responseText = data.candidates[0].content.parts[0].text;
-      console.log('Response text:', responseText); // Debug log
+      const responseText = data.response;
 
       // Parse courses from response
       const parsedCourses = responseText
@@ -158,7 +95,6 @@ export default function CourseRecommendation() {
           const truncatedDescription = description.length > 100 
             ? description.substring(0, 100).trim() + '...'
             : description;
-          
           return {
             id: Math.random().toString(36).substr(2, 9),
             courseCode: courseCode?.trim() || "Unknown",
@@ -167,19 +103,15 @@ export default function CourseRecommendation() {
             credits: 3
           };
         })
-        .filter((course: {
-          courseCode: string; title: string; description: any; 
-}) => 
+        .filter((course: { courseCode: string; title: string; description: any; }) => 
           course.title && 
           course.description && 
           course.courseCode !== 'Unknown'
         );
 
-      console.log('Parsed courses:', parsedCourses); // Debug log
       setCourses(parsedCourses);
 
     } catch (err) {
-      console.error('Error in fetchCourses:', err); // Debug log
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
     } finally {
       setLoading(false);

@@ -16,83 +16,26 @@ export default function Page() {
       setIsLoading(true);
       // Add user message to chat
       setMessages(prev => [...prev, { text: inputMessage, isUser: true }]);
-      
-      const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-      console.log('API Key exists:', !!apiKey); // Debug log (don't log the actual key)
 
-      if (!apiKey) {
-        throw new Error("API key not found");
-      }
-
-      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`;
-      console.log('Making request to Gemini API...'); // Debug log
-
-      const requestBody = {
-        contents: [{
-          parts: [{
-            text: inputMessage
-          }]
-        }],
-        generationConfig: {
-          temperature: 0.7,
-          topK: 32,
-          topP: 1,
-          maxOutputTokens: 1024,
-        },
-        safetySettings: [
-          {
-            category: "HARM_CATEGORY_HARASSMENT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          },
-          {
-            category: "HARM_CATEGORY_HATE_SPEECH",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          },
-          {
-            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          },
-          {
-            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          }
-        ]
-      };
-
-      console.log('Request body:', requestBody); // Debug log
-
-      const response = await fetch(apiUrl, {
+      const response = await fetch('/api/langchain-chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: inputMessage }),
       });
-
-      console.log('Response status:', response.status); // Debug log
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('API Error Response:', errorText); // Debug log
         throw new Error(`API error: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
-      console.log('API Response:', data); // Debug log
-
-      if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
-        throw new Error('Invalid response format from API');
-      }
-
-      const aiResponse = data.candidates[0].content.parts[0].text;
-      console.log('AI Response:', aiResponse); // Debug log
+      const aiResponse = data.response;
 
       // Add AI response to chat
       setMessages(prev => [...prev, { text: aiResponse, isUser: false }]);
       setInputMessage('');
 
     } catch (error) {
-      console.error('Error in sendMessage:', error); // Debug log
       setMessages(prev => [...prev, { 
         text: "Sorry, I couldn't process your request. Please try again.", 
         isUser: false 
