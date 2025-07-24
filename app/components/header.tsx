@@ -92,19 +92,19 @@ function Header() {
           </div>
           <div className="flex-1 flex justify-center items-center gap-12">
             <Link 
-              href="/signin" 
+              href={user ? "/courses" : "/signin"} 
               className="px-4 py-2 rounded-lg text-white/75 hover:text-black hover:bg-white text-lg font-medium transition-all"
             >
               Courses
             </Link>
             <Link 
-              href="/signin" 
+              href={user ? "/schedule" : "/signin"} 
               className="px-4 py-2 rounded-lg text-white/75 hover:text-black hover:bg-white text-lg font-medium transition-all"
             >
               Schedule
             </Link>
             <Link 
-              href="/signin" 
+              href={user ? "/chat" : "/signin"} 
               className="px-4 py-2 rounded-lg text-white/75 hover:text-black hover:bg-white text-lg font-medium transition-all"
             >
               Chatbot
