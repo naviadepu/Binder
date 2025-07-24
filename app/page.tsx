@@ -19,12 +19,13 @@ export default function Home() {
             Efficiently manage your courses, schedule and chatbot all in one place.
           </p>
           <div className="space-x-4">
-            <Link href="/courses">
-              <button className="bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-transform hover:scale-105 inline-flex items-center">
-                Get Started
-                <ArrowRightIcon className="w-5 h-5 ml-2" />
-              </button>
-            </Link>
+          <Link href="/signin">
+            <button className="bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-transform hover:scale-105 inline-flex items-center">
+            Get Started
+          <ArrowRightIcon className="w-5 h-5 ml-2" />
+          </button>
+          </Link>
+
             <button 
               onClick={scrollToContent}
               className="text-white bg-transparent border-2 border-white px-6 py-3 rounded-lg font-medium transition-transform hover:scale-105"

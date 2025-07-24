@@ -52,6 +52,7 @@ export default function RootLayout({
                 Chatbot
               </Link>
             </div>
+            {/*
             <div className="flex-none">
               <button className="bg-white hover:bg-white/90 text-black px-5 py-2 rounded-lg text-base font-medium transition-colors flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -60,6 +61,7 @@ export default function RootLayout({
                 Sign In
               </button>
             </div>
+            */}
           </div>
         </nav>
         <main className="relative min-h-screen flex items-center justify-center">
