@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
-
-export default {
+const nextConfig = {
   output: 'export',
-  // ...any other Next.js config options you have
-}
+  images: {
+    unoptimized: true,
+  },
+  // ...other config
+};
+
+export default nextConfig;

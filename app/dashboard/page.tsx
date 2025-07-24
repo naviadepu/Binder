@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { onAuthStateChanged, User } from 'firebase/auth';
+import { onAuthStateChanged, User, updateProfile, signOut } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
 import Link from 'next/link';
 import { 
@@ -11,6 +11,7 @@ import {
   ChatBubbleLeftRightIcon,
   ArrowRightIcon 
 } from '@heroicons/react/24/outline';
+import Image from 'next/image';
 
 const Dashboard: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -26,7 +27,6 @@ const Dashboard: React.FC = () => {
       }
       setLoading(false);
     });
-
     return () => unsubscribe();
   }, [router]);
 
