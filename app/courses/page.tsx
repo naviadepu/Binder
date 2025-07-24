@@ -68,19 +68,14 @@ export default function CourseRecommendation() {
     try {
       const prompt = `You are a course recommendation system. Based on the following student information, recommend suitable courses:\nMajor: ${userPreferences.major}\nYear: ${userPreferences.year}\n${userPreferences.pathway ? `Desired Pathway: ${userPreferences.pathway}` : ''}\nPrerequisites Completed: ${userPreferences.prerequisites.join(', ') || 'None'}\n\nFormat each course recommendation as:\nCOURSECODE: Course Title\nDescription of the course`;
 
-      const response = await fetch('/api/langchain-chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: prompt }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.text();
-        throw new Error(`API error: ${response.status}`);
+      if (typeof window === 'undefined' || !window.puter) {
+        throw new Error('Puter.js not loaded.');
       }
-
-      const data = await response.json();
-      const responseText = data.response;
+      const response = await window.puter.ai.chat(prompt, { model: 'gpt-4.1-nano' });
+      console.log('Puter.js response:', response);
+      const responseText = typeof response === 'string'
+        ? response
+        : response.message?.content || response.text || response.message || '';
 
       // Parse courses from response
       const parsedCourses = responseText
