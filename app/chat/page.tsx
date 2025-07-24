@@ -4,6 +4,16 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import { SendHorizontal, Upload } from 'lucide-react'
 
+// Utility to format AI response for readability (bold headings, lists)
+function formatAIResponse(text: string) {
+  // Replace markdown headings and bold with <strong>
+  let formatted = text
+    .replace(/^\s*\d+\.\s/gm, '<br>$&') // Add line breaks before numbered lists
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold
+    .replace(/\n/g, '<br>'); // Newlines to <br>
+  return formatted;
+}
+
 export default function Page() {
   const [messages, setMessages] = useState<Array<{ text: string; isUser: boolean }>>([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -16,24 +26,22 @@ export default function Page() {
       setIsLoading(true);
       // Add user message to chat
       setMessages(prev => [...prev, { text: inputMessage, isUser: true }]);
-
-      const response = await fetch('/api/langchain-chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: inputMessage }),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`API error: ${response.status} - ${errorText}`);
-      }
-
-      const data = await response.json();
-      const aiResponse = data.response;
-
-      // Add AI response to chat
-      setMessages(prev => [...prev, { text: aiResponse, isUser: false }]);
       setInputMessage('');
+
+      // Use Puter.js for AI response
+      if (typeof window === 'undefined' || !window.puter) {
+        setMessages(prev => [...prev, { text: "Puter.js not loaded.", isUser: false }]);
+        setIsLoading(false);
+        return;
+      }
+      const response = await window.puter.ai.chat(inputMessage, { model: 'gpt-4.1-nano' });
+      const aiResponse = typeof response === 'string'
+        ? response
+        : response.message?.content || response.text || response.message || '';
+
+      // Add AI response to chat (sanitize markdown bold)
+      const sanitizedResponse = aiResponse.replace(/\*\*/g, '');
+      setMessages(prev => [...prev, { text: sanitizedResponse, isUser: false }]);
 
     } catch (error) {
       setMessages(prev => [...prev, { 
@@ -86,7 +94,11 @@ export default function Page() {
                     : 'bg-gray-800/70 text-gray-200'
                 }`}
               >
-                <p className="whitespace-pre-wrap break-words">{message.text}</p>
+                {message.isUser ? (
+                  <p className="whitespace-pre-wrap break-words">{message.text}</p>
+                ) : (
+                  <div className="whitespace-pre-wrap break-words" dangerouslySetInnerHTML={{ __html: formatAIResponse(message.text) }} />
+                )}
               </div>
             </div>
           ))}
@@ -108,14 +120,10 @@ export default function Page() {
         {/* Chat Input */}
         <div className="fixed bottom-6 left-6 right-6 max-w-[800px] mx-auto">
           <div className="bg-gray-800/70 rounded-lg p-4 flex items-center gap-4">
-            <Image
-              src="/melos.png"
-              alt="Melos"
-              width={40}
-              height={40}
-              className="rounded-full"
-              priority
-            />
+            {/* Replace Melos image with a nice icon */}
+            <div className="bg-blue-500/80 p-2 rounded-full flex items-center justify-center">
+              <SendHorizontal size={28} className="text-white" />
+            </div>
             <input 
               type="text"
               value={inputMessage}

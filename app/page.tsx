@@ -1,8 +1,18 @@
 'use client';
 import Link from 'next/link'
 import { ArrowRightIcon } from '@heroicons/react/24/outline'
+import { useEffect, useState } from 'react';
+import { auth } from '../lib/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export default function Home() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsLoggedIn(!!user);
+    });
+    return () => unsubscribe();
+  }, []);
   const scrollToContent = () => {
     document.getElementById('learn-more')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -19,7 +29,7 @@ export default function Home() {
             Efficiently manage your courses, schedule and chatbot all in one place.
           </p>
           <div className="space-x-4">
-          <Link href="/signin">
+          <Link href={isLoggedIn ? "/dashboard" : "/signin"}>
             <button className="bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-transform hover:scale-105 inline-flex items-center">
             Get Started
           <ArrowRightIcon className="w-5 h-5 ml-2" />

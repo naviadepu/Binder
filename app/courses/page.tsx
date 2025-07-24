@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from 'react';
-import { Check } from 'lucide-react';
+import { Check, Calendar } from 'lucide-react';
+import { useCourseStore } from '../../lib/courseStore';
+import Link from 'next/link';
 
 // Define interfaces clearly
 interface Course {
@@ -35,6 +37,8 @@ export default function CourseRecommendation() {
   const [sendingToAdvisor, setSendingToAdvisor] = useState(false);
   const [advisorMessage, setAdvisorMessage] = useState<string>('');
   const [hoveredCourse, setHoveredCourse] = useState<string | null>(null);
+  const setGlobalCourses = useCourseStore((state) => state.addCourses);
+  const [addedToSchedule, setAddedToSchedule] = useState(false);
 
   // Helper functions
   const addPrerequisite = () => {
@@ -286,6 +290,27 @@ export default function CourseRecommendation() {
                 Selected: {enrolledCourses.length} courses 
                 ({enrolledCourses.reduce((acc, curr) => acc + curr.credits, 0)} credits)
               </p>
+              <div className="mt-4 flex gap-4 items-center">
+                <button
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+                  onClick={() => {
+                    setGlobalCourses(enrolledCourses);
+                    setAddedToSchedule(true);
+                    setTimeout(() => setAddedToSchedule(false), 2000);
+                  }}
+                >
+                  Add Selected Courses to Schedule
+                </button>
+                <Link href="/schedule" className="inline-block">
+                  <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-300 via-teal-300 to-purple-300 hover:from-indigo-400 hover:to-purple-400 text-indigo-900 rounded-lg shadow-lg transition-all text-base font-semibold">
+                    <Calendar className="w-5 h-5" />
+                    View Schedule
+                  </button>
+                </Link>
+                {addedToSchedule && (
+                  <span className="text-green-400 flex items-center gap-2">Added to schedule!</span>
+                )}
+              </div>
             </div>
           )}
         </div>

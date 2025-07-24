@@ -1,5 +1,18 @@
-import React from 'react';
+"use client";
+
+import React, { useState } from 'react';
 import { CalendarDaysIcon } from '@heroicons/react/24/outline';
+import { useCourseStore } from '../../lib/courseStore';
+
+const COURSE_COLORS = [
+  'bg-indigo-200 text-indigo-900', // lavender
+  'bg-teal-200 text-teal-900',     // teal
+  'bg-purple-200 text-purple-900', // soft purple
+  'bg-pink-200 text-pink-900',     // pink
+  'bg-sky-200 text-sky-900',       // sky blue
+  'bg-emerald-200 text-emerald-900', // mint/green
+  'bg-yellow-200 text-yellow-900', // pastel yellow
+];
 
 export default function Schedule() {
   const timeSlots = [
@@ -7,11 +20,55 @@ export default function Schedule() {
     "1pm", "2pm", "3pm", "4pm", "5pm"
   ];
   const days = ["M", "T", "W", "R", "F"];
+  const enrolledCourses = useCourseStore((state) => state.enrolledCourses);
+
+  // State for placing courses
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(
+    enrolledCourses[0]?.id || null
+  );
+  const [hoverCell, setHoverCell] = useState<{ day: string; time: string } | null>(null);
+  const [placedCourses, setPlacedCourses] = useState<
+    Array<{ courseId: string; day: string; time: string }>
+  >([]);
+
+  // Helper to get course color
+  const getCourseColor = (courseId: string) => {
+    const idx = enrolledCourses.findIndex((c) => c.id === courseId);
+    return COURSE_COLORS[idx % COURSE_COLORS.length];
+  };
+
+  // Helper to get course by id
+  const getCourse = (courseId: string) =>
+    enrolledCourses.find((c) => c.id === courseId);
+
+  // Check if a course is placed in a cell
+  const getPlacedCourse = (day: string, time: string) =>
+    placedCourses.find((p) => p.day === day && p.time === time);
 
   return (
     <div className="min-h-screen pt-24 pb-6 px-6 font-poppins overflow-y-auto">
       <h1 className="text-4xl font-bold text-white mb-1">Schedule</h1>
-      <p className="text-white/70 mb-4">Your approved course schedule</p>
+      <p className="text-white/70 mb-4">Place your courses on the schedule</p>
+
+      {/* Course Picker */}
+      {enrolledCourses.length > 0 && (
+        <div className="mb-6 flex flex-wrap gap-4 items-center">
+          <span className="text-white/80 font-medium">Select a course to place:</span>
+          {enrolledCourses.map((course) => (
+            <button
+              key={course.id}
+              className={`px-4 py-2 rounded-lg font-medium shadow transition-all border-2 focus:outline-none ${
+                selectedCourseId === course.id
+                  ? `${getCourseColor(course.id)} border-white text-white scale-105`
+                  : 'bg-white/10 border-transparent text-white/80 hover:bg-white/20'
+              }`}
+              onClick={() => setSelectedCourseId(course.id)}
+            >
+              {course.courseCode}: {course.title}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="bg-black/20 rounded-lg p-4 backdrop-blur-sm border border-white/10">
         {/* Schedule Grid */}
@@ -32,25 +89,76 @@ export default function Schedule() {
               <div className="h-12 flex items-center justify-center text-white font-medium">
                 {day}
               </div>
-              {timeSlots.map((time) => (
-                <div key={`${day}-${time}`} className="h-20 border-t border-white/5">
-                  {/* Course blocks will go here */}
-                                  </div>
-              ))}
+              {timeSlots.map((time) => {
+                const placed = getPlacedCourse(day, time);
+                const isHovering =
+                  hoverCell &&
+                  hoverCell.day === day &&
+                  hoverCell.time === time &&
+                  selectedCourseId &&
+                  !placed;
+                return (
+                  <div
+                    key={`${day}-${time}`}
+                    className="h-20 border-t border-white/5 relative cursor-pointer group"
+                    onMouseEnter={() => setHoverCell({ day, time })}
+                    onMouseLeave={() => setHoverCell(null)}
+                    onClick={() => {
+                      if (
+                        selectedCourseId &&
+                        !placed &&
+                        !placedCourses.some(
+                          (p) => p.courseId === selectedCourseId && p.day === day && p.time === time
+                        )
+                      ) {
+                        setPlacedCourses((prev) => [
+                          ...prev,
+                          { courseId: selectedCourseId, day, time },
+                        ]);
+                      }
+                    }}
+                  >
+                    {/* Placed course */}
+                    {placed && (
+                      <div
+                        className={`absolute inset-2 rounded-lg flex flex-col justify-center items-center text-white font-semibold text-xs shadow-lg ${getCourseColor(
+                          placed.courseId
+                        )} animate-fade-in`}
+                        style={{ zIndex: 2 }}
+                      >
+                        <span>{getCourse(placed.courseId)?.courseCode}</span>
+                        <span className="text-[10px] font-normal">
+                          {getCourse(placed.courseId)?.title}
+                        </span>
+                      </div>
+                    )}
+                    {/* Hover preview */}
+                    {isHovering && (
+                      <div
+                        className={`absolute inset-2 rounded-lg flex flex-col justify-center items-center text-white font-semibold text-xs opacity-80 border-2 border-dashed border-white ${getCourseColor(
+                          selectedCourseId
+                        )} animate-fade-in`}
+                        style={{ zIndex: 1 }}
+                      >
+                        <span>{getCourse(selectedCourseId)?.courseCode}</span>
+                        <span className="text-[10px] font-normal">
+                          {getCourse(selectedCourseId)?.title}
+                        </span>
+                        <span className="text-[9px] mt-1 italic">Click to place</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           ))}
         </div>
       </div>
-
-      {/* Controls */}
-      <div className="mt-6 flex justify-end gap-4">
-        <button className="px-4 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all">
-          Share Schedule
-        </button>
-        <button className="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-600 transition-all">
-          Export Calendar
-        </button>
-      </div>
     </div>
   );
 }
+
+// Add a simple fade-in animation
+// Add this to your global CSS or tailwind.config.js:
+// .animate-fade-in { animation: fadeIn 0.3s; }
+// @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
