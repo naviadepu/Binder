@@ -53,7 +53,7 @@ export default function Home() {
               it helps you stay organized and excel in your academic journey.
             </p>
             <footer className="text-white/70 text-xl sm:text-2xl mt-4">
-              — Your Academic Success Partner
+               Your Academic Success Partner
             </footer>
           </blockquote>
         </div>

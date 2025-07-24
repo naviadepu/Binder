@@ -1,7 +1,8 @@
-import React from 'react'
+import React from 'react';
+import { CalendarDaysIcon } from '@heroicons/react/24/outline';
 
 export default function Schedule() {
-    const timeSlots = [
+  const timeSlots = [
     "8am", "9am", "10am", "11am", "12pm", 
     "1pm", "2pm", "3pm", "4pm", "5pm"
   ];
