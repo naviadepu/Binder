@@ -28,13 +28,21 @@ export default function Page() {
       setMessages(prev => [...prev, { text: inputMessage, isUser: true }]);
       setInputMessage('');
 
-      // Use Puter.js for AI response
+      // Context-aware: Concatenate last 10 messages for context
+      // Downside: Large/long conversations can make the prompt very long, increasing latency and cost, and may hit model context limits.
+      // Only the last 10 exchanges are included for efficiency.
+      const contextMessages = [...messages, { text: inputMessage, isUser: true }].slice(-10);
+      const contextPrompt = contextMessages
+        .map(m => (m.isUser ? 'User: ' : 'Assistant: ') + m.text)
+        .join('\n');
+
+      // Use Puter.js for AI response with context
       if (typeof window === 'undefined' || !window.puter) {
         setMessages(prev => [...prev, { text: "Puter.js not loaded.", isUser: false }]);
         setIsLoading(false);
         return;
       }
-      const response = await window.puter.ai.chat(inputMessage, { model: 'gpt-4.1-nano' });
+      const response = await window.puter.ai.chat(contextPrompt, { model: 'gpt-4.1-nano' });
       const aiResponse = typeof response === 'string'
         ? response
         : response.message?.content || response.text || response.message || '';

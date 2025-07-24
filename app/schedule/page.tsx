@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { CalendarDaysIcon } from '@heroicons/react/24/outline';
 import { useCourseStore } from '../../lib/courseStore';
+import Link from 'next/link';
 
 const COURSE_COLORS = [
   'bg-indigo-200 text-indigo-900', // lavender
@@ -49,6 +50,15 @@ export default function Schedule() {
     <div className="min-h-screen pt-24 pb-6 px-6 font-poppins overflow-y-auto">
       <h1 className="text-4xl font-bold text-white mb-1">Schedule</h1>
       <p className="text-white/70 mb-4">Place your courses on the schedule</p>
+
+      {/* Add Course Button */}
+      <div className="mb-6">
+        <Link href="/courses">
+          <button className="bg-gradient-to-r from-pink-400 via-purple-500 to-indigo-400 hover:from-pink-300 hover:via-purple-400 hover:to-indigo-300 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition-all">
+            Get courses to add to schedule
+          </button>
+        </Link>
+      </div>
 
       {/* Course Picker */}
       {enrolledCourses.length > 0 && (
