@@ -2,15 +2,23 @@
 
 import React, { useState } from 'react'
 import Image from 'next/image'
-import { SendHorizontal, Upload } from 'lucide-react'
+import { SendHorizontal, Upload, ArrowRight, CalendarPlus, Eye } from 'lucide-react'
 
-// Utility to format AI response for readability (bold headings, lists)
+// Enhanced formatting for AI responses: bold headings, underline/color links, better lists
 function formatAIResponse(text: string) {
-  // Replace markdown headings and bold with <strong>
   let formatted = text
-    .replace(/^\s*\d+\.\s/gm, '<br>$&') // Add line breaks before numbered lists
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold
-    .replace(/\n/g, '<br>'); // Newlines to <br>
+    // Bold headings (lines ending with ':')
+    .replace(/^(.*?):\s*$/gm, '<strong class="font-bold text-lg">$1:</strong>')
+    // Underline and color links
+    .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" class="underline text-blue-400 hover:text-blue-600" target="_blank" rel="noopener noreferrer">$1</a>')
+    // Bold markdown **text**
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    // Numbered lists: add margin
+    .replace(/(\d+\. .+)/g, '<div class="ml-4 my-1">$1</div>')
+    // Bulleted lists: add margin
+    .replace(/(\- .+)/g, '<div class="ml-4 my-1">$1</div>')
+    // Newlines to <br>
+    .replace(/\n/g, '<br>');
   return formatted;
 }
 
@@ -18,6 +26,17 @@ export default function Page() {
   const [messages, setMessages] = useState<Array<{ text: string; isUser: boolean }>>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [hasAddedCourses, setHasAddedCourses] = useState(false); // Track if courses have been added
+
+  // Simulate adding courses (replace with real logic as needed)
+  const handleAddCourses = () => {
+    setHasAddedCourses(true);
+  };
+
+  // Simulate viewing schedule (replace with real navigation as needed)
+  const handleViewSchedule = () => {
+    window.location.href = '/schedule';
+  };
 
   const sendMessage = async () => {
     if (!inputMessage.trim()) return;
@@ -68,21 +87,56 @@ export default function Page() {
         <div className="mb-8">
           <div className="bg-gray-800/50 rounded-lg p-4 max-w-[600px]">
             <h2 className="text-gray-300 mb-4">Hi! I'm Melos..., I can:</h2>
-            
-            {/* Capabilities List */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-3 bg-gray-800/70 p-3 rounded-lg">
-                <div className="bg-cyan-500/80 p-2 rounded-full">
-                  <i className="fas fa-info text-white"></i>
-                </div>
-                <p className="text-gray-300">Help you with your course selection</p>
+            {/* Modernized Capabilities Flow */}
+            <div className="flex flex-col gap-6">
+              {/* Modern flow: Add → View */}
+              <div className="flex items-center justify-center gap-4">
+                {/* Add Courses Button (only if not added) */}
+                {!hasAddedCourses && (
+                  <>
+                    <button
+                      onClick={handleAddCourses}
+                      className="flex items-center gap-2 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-4 py-2 rounded-lg shadow transition-colors"
+                    >
+                      <CalendarPlus size={20} />
+                      Add courses to schedule
+                    </button>
+                    {/* Arrow between buttons */}
+                    <ArrowRight size={28} className="mx-2 text-black" />
+                    <button
+                      onClick={handleViewSchedule}
+                      className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white font-semibold px-4 py-2 rounded-lg shadow transition-colors"
+                    >
+                      <Eye size={20} />
+                      View schedule
+                    </button>
+                  </>
+                )}
+                {/* View Schedule Button (only after adding courses) */}
+                {hasAddedCourses && (
+                  <button
+                    onClick={handleViewSchedule}
+                    className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white font-semibold px-4 py-2 rounded-lg shadow transition-colors"
+                  >
+                    <Eye size={20} />
+                    View schedule
+                  </button>
+                )}
               </div>
-
-              <div className="flex items-center gap-3 bg-gray-800/70 p-3 rounded-lg">
-                <div className="bg-pink-500/80 p-2 rounded-full">
-                  <i className="fas fa-eye text-white"></i>
+              {/* Capabilities List (optional, can keep for info) */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 bg-gray-800/70 p-3 rounded-lg">
+                  <div className="bg-cyan-500/80 p-2 rounded-full">
+                    <i className="fas fa-info text-white"></i>
+                  </div>
+                  <p className="text-gray-300">Help you with your course selection</p>
                 </div>
-                <p className="text-gray-300">Search anything from your courses</p>
+                <div className="flex items-center gap-3 bg-gray-800/70 p-3 rounded-lg">
+                  <div className="bg-pink-500/80 p-2 rounded-full">
+                    <i className="fas fa-eye text-white"></i>
+                  </div>
+                  <p className="text-gray-300">Search anything from your courses</p>
+                </div>
               </div>
             </div>
           </div>
@@ -105,7 +159,7 @@ export default function Page() {
                 {message.isUser ? (
                   <p className="whitespace-pre-wrap break-words">{message.text}</p>
                 ) : (
-                  <div className="whitespace-pre-wrap break-words" dangerouslySetInnerHTML={{ __html: formatAIResponse(message.text) }} />
+                  <div className="whitespace-pre-wrap break-words text-white/90" dangerouslySetInnerHTML={{ __html: formatAIResponse(message.text) }} />
                 )}
               </div>
             </div>
