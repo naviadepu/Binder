@@ -47,14 +47,14 @@ export default function Schedule() {
     placedCourses.find((p) => p.day === day && p.time === time);
 
   return (
-    <div className="min-h-screen pt-24 pb-6 px-6 font-poppins overflow-y-auto">
-      <h1 className="text-4xl font-bold text-white mb-1">Schedule</h1>
-      <p className="text-white/70 mb-4">Place your courses on the schedule</p>
+    <div className="min-h-screen pt-20 sm:pt-24 pb-6 px-4 sm:px-6 font-poppins overflow-y-auto">
+      <h1 className="text-3xl sm:text-4xl font-bold text-white mb-1">Schedule</h1>
+      <p className="text-white/70 mb-4 text-sm sm:text-base">Place your courses on the schedule</p>
 
       {/* Add Course Button */}
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <Link href="/courses">
-          <button className="bg-gradient-to-r from-pink-400 via-purple-500 to-indigo-400 hover:from-pink-300 hover:via-purple-400 hover:to-indigo-300 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition-all">
+          <button className="bg-gradient-to-r from-pink-400 via-purple-500 to-indigo-400 hover:from-pink-300 hover:via-purple-400 hover:to-indigo-300 text-white font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-lg transition-all text-sm sm:text-base">
             Get courses to add to schedule
           </button>
         </Link>
@@ -62,32 +62,34 @@ export default function Schedule() {
 
       {/* Course Picker */}
       {enrolledCourses.length > 0 && (
-        <div className="mb-6 flex flex-wrap gap-4 items-center">
-          <span className="text-white/80 font-medium">Select a course to place:</span>
-          {enrolledCourses.map((course) => (
-            <button
-              key={course.id}
-              className={`px-4 py-2 rounded-lg font-medium shadow transition-all border-2 focus:outline-none ${
-                selectedCourseId === course.id
-                  ? `${getCourseColor(course.id)} border-white text-white scale-105`
-                  : 'bg-white/10 border-transparent text-white/80 hover:bg-white/20'
-              }`}
-              onClick={() => setSelectedCourseId(course.id)}
-            >
-              {course.courseCode}: {course.title}
-            </button>
-          ))}
+        <div className="mb-4 sm:mb-6">
+          <span className="text-white/80 font-medium text-sm sm:text-base block mb-3">Select a course to place:</span>
+          <div className="flex flex-wrap gap-2 sm:gap-4">
+            {enrolledCourses.map((course) => (
+              <button
+                key={course.id}
+                className={`px-3 sm:px-4 py-2 rounded-lg font-medium shadow transition-all border-2 focus:outline-none text-xs sm:text-sm ${
+                  selectedCourseId === course.id
+                    ? `${getCourseColor(course.id)} border-white text-white scale-105`
+                    : 'bg-white/10 border-transparent text-white/80 hover:bg-white/20'
+                }`}
+                onClick={() => setSelectedCourseId(course.id)}
+              >
+                {course.courseCode}: {course.title}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
-      <div className="bg-black/20 rounded-lg p-4 backdrop-blur-sm border border-white/10">
+      <div className="bg-black/20 rounded-lg p-2 sm:p-4 backdrop-blur-sm border border-white/10 overflow-x-auto">
         {/* Schedule Grid */}
-        <div className="grid grid-cols-[100px_repeat(5,1fr)] gap-[1px] bg-white/10">
+        <div className="grid grid-cols-[80px_repeat(5,1fr)] sm:grid-cols-[100px_repeat(5,1fr)] gap-[1px] bg-white/10 min-w-[600px]">
           {/* Time Column */}
           <div className="bg-black/40">
-            <div className="h-12"></div> {/* Empty cell for header */}
+            <div className="h-10 sm:h-12"></div> {/* Empty cell for header */}
             {timeSlots.map((time) => (
-              <div key={time} className="h-20 flex items-center justify-center text-white/70">
+              <div key={time} className="h-16 sm:h-20 flex items-center justify-center text-white/70 text-xs sm:text-sm">
                 {time}
               </div>
             ))}
@@ -96,7 +98,7 @@ export default function Schedule() {
           {/* Days Columns */}
           {days.map((day) => (
             <div key={day} className="bg-black/40">
-              <div className="h-12 flex items-center justify-center text-white font-medium">
+              <div className="h-10 sm:h-12 flex items-center justify-center text-white font-medium text-sm sm:text-base">
                 {day}
               </div>
               {timeSlots.map((time) => {
@@ -110,7 +112,7 @@ export default function Schedule() {
                 return (
                   <div
                     key={`${day}-${time}`}
-                    className="h-20 border-t border-white/5 relative cursor-pointer group"
+                    className="h-16 sm:h-20 border-t border-white/5 relative cursor-pointer group"
                     onMouseEnter={() => setHoverCell({ day, time })}
                     onMouseLeave={() => setHoverCell(null)}
                     onClick={() => {
@@ -131,13 +133,13 @@ export default function Schedule() {
                     {/* Placed course */}
                     {placed && (
                       <div
-                        className={`absolute inset-2 rounded-lg flex flex-col justify-center items-center text-white font-semibold text-xs shadow-lg ${getCourseColor(
+                        className={`absolute inset-1 sm:inset-2 rounded-lg flex flex-col justify-center items-center text-white font-semibold text-[10px] sm:text-xs shadow-lg ${getCourseColor(
                           placed.courseId
                         )} animate-fade-in`}
                         style={{ zIndex: 2 }}
                       >
                         <span>{getCourse(placed.courseId)?.courseCode}</span>
-                        <span className="text-[10px] font-normal">
+                        <span className="text-[8px] sm:text-[10px] font-normal">
                           {getCourse(placed.courseId)?.title}
                         </span>
                       </div>
@@ -145,16 +147,16 @@ export default function Schedule() {
                     {/* Hover preview */}
                     {isHovering && (
                       <div
-                        className={`absolute inset-2 rounded-lg flex flex-col justify-center items-center text-white font-semibold text-xs opacity-80 border-2 border-dashed border-white ${getCourseColor(
+                        className={`absolute inset-1 sm:inset-2 rounded-lg flex flex-col justify-center items-center text-white font-semibold text-[10px] sm:text-xs opacity-80 border-2 border-dashed border-white ${getCourseColor(
                           selectedCourseId
                         )} animate-fade-in`}
                         style={{ zIndex: 1 }}
                       >
                         <span>{getCourse(selectedCourseId)?.courseCode}</span>
-                        <span className="text-[10px] font-normal">
+                        <span className="text-[8px] sm:text-[10px] font-normal">
                           {getCourse(selectedCourseId)?.title}
                         </span>
-                        <span className="text-[9px] mt-1 italic">Click to place</span>
+                        <span className="text-[7px] sm:text-[9px] mt-1 italic">Click to place</span>
                       </div>
                     )}
                   </div>

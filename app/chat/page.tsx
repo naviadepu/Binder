@@ -81,33 +81,33 @@ export default function Page() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-20 px-6 font-poppins overflow-y-auto">
+    <div className="min-h-screen pt-20 sm:pt-24 pb-20 px-4 sm:px-6 font-poppins overflow-y-auto">
       <div className="max-w-[800px] mx-auto">
         {/* Initial Bot Message */}
-        <div className="mb-8">
-          <div className="bg-gray-800/50 rounded-lg p-4 max-w-[600px]">
-            <h2 className="text-gray-300 mb-4">Hi! I'm Melos..., I can:</h2>
+        <div className="mb-6 sm:mb-8">
+          <div className="bg-gray-800/50 rounded-lg p-3 sm:p-4 max-w-[600px]">
+            <h2 className="text-gray-300 mb-3 sm:mb-4 text-sm sm:text-base">Hi! I'm Melos..., I can:</h2>
             {/* Modernized Capabilities Flow */}
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4 sm:gap-6">
               {/* Modern flow: Add → View */}
-              <div className="flex items-center justify-center gap-4">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
                 {/* Add Courses Button (only if not added) */}
                 {!hasAddedCourses && (
                   <>
                     <button
                       onClick={handleAddCourses}
-                      className="flex items-center gap-2 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-4 py-2 rounded-lg shadow transition-colors"
+                      className="flex items-center gap-2 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-3 sm:px-4 py-2 rounded-lg shadow transition-colors text-sm sm:text-base w-full sm:w-auto justify-center"
                     >
-                      <CalendarPlus size={20} />
+                      <CalendarPlus size={18} className="sm:w-5 sm:h-5" />
                       Add courses to schedule
                     </button>
                     {/* Arrow between buttons */}
-                    <ArrowRight size={28} className="mx-2 text-black" />
+                    <ArrowRight size={24} className="mx-2 text-black hidden sm:block" />
                     <button
                       onClick={handleViewSchedule}
-                      className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white font-semibold px-4 py-2 rounded-lg shadow transition-colors"
+                      className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white font-semibold px-3 sm:px-4 py-2 rounded-lg shadow transition-colors text-sm sm:text-base w-full sm:w-auto justify-center"
                     >
-                      <Eye size={20} />
+                      <Eye size={18} className="sm:w-5 sm:h-5" />
                       View schedule
                     </button>
                   </>
@@ -116,26 +116,26 @@ export default function Page() {
                 {hasAddedCourses && (
                   <button
                     onClick={handleViewSchedule}
-                    className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white font-semibold px-4 py-2 rounded-lg shadow transition-colors"
+                    className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white font-semibold px-3 sm:px-4 py-2 rounded-lg shadow transition-colors text-sm sm:text-base w-full sm:w-auto justify-center"
                   >
-                    <Eye size={20} />
+                    <Eye size={18} className="sm:w-5 sm:h-5" />
                     View schedule
                   </button>
                 )}
               </div>
               {/* Capabilities List (optional, can keep for info) */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 bg-gray-800/70 p-3 rounded-lg">
-                  <div className="bg-cyan-500/80 p-2 rounded-full">
-                    <i className="fas fa-info text-white"></i>
+              <div className="space-y-2 sm:space-y-3">
+                <div className="flex items-center gap-3 bg-gray-800/70 p-2 sm:p-3 rounded-lg">
+                  <div className="bg-cyan-500/80 p-1.5 sm:p-2 rounded-full">
+                    <i className="fas fa-info text-white text-xs sm:text-sm"></i>
                   </div>
-                  <p className="text-gray-300">Help you with your course selection</p>
+                  <p className="text-gray-300 text-xs sm:text-sm">Help you with your course selection</p>
                 </div>
-                <div className="flex items-center gap-3 bg-gray-800/70 p-3 rounded-lg">
-                  <div className="bg-pink-500/80 p-2 rounded-full">
-                    <i className="fas fa-eye text-white"></i>
+                <div className="flex items-center gap-3 bg-gray-800/70 p-2 sm:p-3 rounded-lg">
+                  <div className="bg-pink-500/80 p-1.5 sm:p-2 rounded-full">
+                    <i className="fas fa-eye text-white text-xs sm:text-sm"></i>
                   </div>
-                  <p className="text-gray-300">Search anything from your courses</p>
+                  <p className="text-gray-300 text-xs sm:text-sm">Search anything from your courses</p>
                 </div>
               </div>
             </div>
@@ -143,23 +143,23 @@ export default function Page() {
         </div>
 
         {/* Chat Messages */}
-        <div className="space-y-4 mb-20"> {/* Added mb-20 for spacing from input */}
+        <div className="space-y-3 sm:space-y-4 mb-20"> {/* Added mb-20 for spacing from input */}
           {messages.map((message, index) => (
             <div
               key={index}
               className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`max-w-[80%] rounded-xl p-4 ${
+                className={`max-w-[85%] sm:max-w-[80%] rounded-xl p-3 sm:p-4 ${
                   message.isUser 
                     ? 'bg-blue-500/80 text-white' 
                     : 'bg-gray-800/70 text-gray-200'
                 }`}
               >
                 {message.isUser ? (
-                  <p className="whitespace-pre-wrap break-words">{message.text}</p>
+                  <p className="whitespace-pre-wrap break-words text-sm sm:text-base">{message.text}</p>
                 ) : (
-                  <div className="whitespace-pre-wrap break-words text-white/90" dangerouslySetInnerHTML={{ __html: formatAIResponse(message.text) }} />
+                  <div className="whitespace-pre-wrap break-words text-white/90 text-sm sm:text-base" dangerouslySetInnerHTML={{ __html: formatAIResponse(message.text) }} />
                 )}
               </div>
             </div>
@@ -168,7 +168,7 @@ export default function Page() {
           {/* Loading indicator */}
           {isLoading && (
             <div className="flex justify-start">
-              <div className="bg-gray-800/70 rounded-xl p-4">
+              <div className="bg-gray-800/70 rounded-xl p-3 sm:p-4">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
@@ -180,11 +180,11 @@ export default function Page() {
         </div>
 
         {/* Chat Input */}
-        <div className="fixed bottom-6 left-6 right-6 max-w-[800px] mx-auto">
-          <div className="bg-gray-800/70 rounded-lg p-4 flex items-center gap-4">
+        <div className="fixed bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 max-w-[800px] mx-auto">
+          <div className="bg-gray-800/70 rounded-lg p-3 sm:p-4 flex items-center gap-3 sm:gap-4">
             {/* Replace Melos image with a nice icon */}
-            <div className="bg-blue-500/80 p-2 rounded-full flex items-center justify-center">
-              <SendHorizontal size={28} className="text-white" />
+            <div className="bg-blue-500/80 p-1.5 sm:p-2 rounded-full flex items-center justify-center">
+              <SendHorizontal size={20} className="sm:w-7 sm:h-7 text-white" />
             </div>
             <input 
               type="text"
@@ -192,7 +192,7 @@ export default function Page() {
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && !isLoading && sendMessage()}
               placeholder="Ask me anything..."
-              className="w-full bg-gray-700/50 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-gray-700/50 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
               disabled={isLoading}
             />
             <button 
@@ -200,7 +200,7 @@ export default function Page() {
               disabled={isLoading || !inputMessage.trim()}
               className="text-white hover:text-white/80 transition-colors disabled:opacity-50"
             >
-              <SendHorizontal size={24} />
+              <SendHorizontal size={20} className="sm:w-6 sm:h-6" />
             </button>
           </div>
         </div>
