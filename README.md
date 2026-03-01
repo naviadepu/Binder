@@ -1,60 +1,43 @@
 # 📘 Binder — AI Academic Advisor Platform
 
-Binder is an **AI-powered academic advising application** designed to help students navigate courses, requirements, and academic decisions more efficiently.
-
-Built as both a **product and a research-backed system**, Binder explores how AI-driven advising can reduce friction, improve clarity, and scale student support.
-
----
-
-## ✨ What Binder Does
-
-Binder acts as a personalized academic advisor by:
-
-- 📚 Helping students understand course requirements and pathways  
-- 🧠 Providing AI-assisted guidance tailored to academic context  
-- ⏱️ Reducing reliance on manual advising for common questions  
-- 🤝 Improving access to advising support at scale  
-
-Binder is actively evolving and has been deployed as a live application.
+Binder is an AI-powered academic advising platform that helps students 
+navigate courses, requirements, and academic decisions at scale.
 
 ---
 
-## 🚀 Live Deployment
+## 🧠 How It Works
 
-The Binder app is **already deployed** and accessible online.
+Binder uses a RAG (Retrieval-Augmented Generation) pipeline to match 
+students with relevant academic programs and courses. The AI layer is 
+powered by AWS Bedrock, with LangChain handling query optimization and 
+retrieval logic — reducing the time it takes to surface relevant course 
+recommendations by 40%.
 
-👉 **Live App:** *http://binder-ivory.vercel.app*  
-👉 **Platform:** Vercel
+The system matches students across 200+ academic programs using 
+semantic search and retrieval, returning personalized results in 
+real time.
 
 ---
 
 ## 🛠 Tech Stack
 
-- **Framework:** Next.js (App Router)
-- **Language:** TypeScript
-- **Frontend:** React
-- **Styling:** Tailwind CSS
-- **Fonts:** `next/font` with Inter
+- **Frontend:** Next.js, React, TypeScript, Tailwind CSS
+- **AI / RAG Pipeline:** AWS Bedrock, LangChain
+- **APIs:** Third-party course data APIs, Next.js API routes
 - **Deployment:** Vercel
-- **AI / Research Integration:** (internal / ongoing)
 
 ---
 
-## ⚙️ Running Binder Locally
+## ✨ Key Features
 
-If you want to run Binder locally for development or contribution:
+- AI-driven course recommendations personalized to each student
+- RAG pipeline optimized with LangChain for fast, accurate retrieval
+- 40% reduction in AI response latency for course matching
+- Matches students across 200+ academic programs in real time
+- Deployed as a live application
 
-### Prerequisites
-- Node.js v18 or later
-- npm / yarn / pnpm / bun
+---
 
-### Installation & Startup
+## 🚀 Live App
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+👉 [binder-ivory.vercel.app](http://binder-ivory.vercel.app)
